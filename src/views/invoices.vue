@@ -1,12 +1,10 @@
 <template>
 <div class="container">
-    <h1>Invoices</h1>
-    <q-btn @click="createInvoiceOpened = true">Create invoice</q-btn>
-    <div v-for="invoice in invoices" :key="invoice._id">
-        <p>{{invoice.name}}</p>
-        <p>{{invoice.description}}</p>
-        <p>{{invoice.amount}}</p>
+    <div class="header">
+        <h3>Invoices</h3>
+        <q-btn no-caps color="primary" outline @click="createInvoiceOpened = true">Create invoice</q-btn>
     </div>
+    <q-table title="Invoices" :rows="invoices" :columns="columns" row-key="name"/>
 </div>
 <q-dialog v-model="createInvoiceOpened">
     <q-card class="q-pa-md">
@@ -43,7 +41,12 @@ export default {
         return {
             invoices: [],
             invoice: {},
-            createInvoiceOpened: false
+            createInvoiceOpened: false,
+            columns: [
+            { name: "name", label: "Name", align: "left", field: "name", sortable: true },
+            { name: "description", align: "center", label: "Description", field: "description", sortable: true },
+            { name: "amount", align: "center", label: "Amount", field: "amount", sortable: true }
+        ]
         }
     },
 
@@ -60,15 +63,20 @@ export default {
 
 <style>
 
-.container {
-    max-width: 500px;
+h3 {
+    text-align: left;
 }
-#app {
+
+.header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+/* #app {
   font-family: Avenir, Helvetica, Arial, sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
   text-align: center;
   color: #2c3e50;
-  margin-top: 60px;
-}
+} */
 </style>

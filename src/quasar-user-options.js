@@ -9,7 +9,10 @@ export default {
             primary: '#3EA39F',
             red: '#E36565',
             blue: '#3E5669'
-        }
+        },
+        extras: [
+            'material-icons'
+          ]
     },
     plugins: {
     }

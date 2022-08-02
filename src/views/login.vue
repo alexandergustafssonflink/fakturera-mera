@@ -1,12 +1,14 @@
 <template>
-  <div class="container">
-    <h1>Login!</h1>
+<div class="box">
+  <div class="wrapper">
+    <h3>Login!</h3>
     <q-input label="Name" v-model="user.email"></q-input>
-    <q-input label="password" v-model="user.password"></q-input>
-    <q-btn @click="login()">Login</q-btn>
+    <q-input type="password" label="Password" v-model="user.password"></q-input>
+    <q-btn  class="q-mt-lg" no-caps color="primary" @click="login()">Login</q-btn>
     <h3>{{error}}</h3>
     <router-view />
   </div>
+</div>
 </template>
 
 <script>
@@ -49,17 +51,17 @@ export default {
 }
 </script>
 
-<style>
+<style scoped>
 
-.container {
-    max-width: 500px;
+.box {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: fit-content;
+    margin-top: 50px;
 }
-#app {
-  font-family: Avenir, Helvetica, Arial, sans-serif;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
-  text-align: center;
-  color: #2c3e50;
-  margin-top: 60px;
+.wrapper {
+    min-width: 300px;
+    max-width: 500px;
 }
 </style>
