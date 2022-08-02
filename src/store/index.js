@@ -1,31 +1,28 @@
-import { createApp } from 'vue'
-import App from './App.vue'
-import quasarUserOptions from './quasar-user-options'
-import { Quasar } from "quasar"
 import { createStore } from "vuex";
-import router from "./router/index.js";
-import createPersistedState from "vuex-persistedstate";
+// import setTokenExpiration, { hasExpired } from "@/plugins/token-expiration";
 
-const store = createStore({
+export default createStore({
     state() {
         return {
             token: "",
             isLoggedIn() {
-                if(this.token) {
+                if(localStorage.token) {
                     return true
                 } else {
-                    return false;
+                    return false
                 }
             }
         };
     },
-    plugins: [createPersistedState()],
     getters: {
     },
     mutations: {
         login(state, token) {
             state.token = token;
             console.log("HEJ");
+            
+            
+            // setTokenExpiration(token);
         },
         clearUser(state) {
             state.token = "";
@@ -37,9 +34,3 @@ const store = createStore({
     modules: {
     }
 });
-
-createApp(App).use(router).use(store).use(Quasar, quasarUserOptions).mount('#app')
-
-
-
-//   app.use(store);
