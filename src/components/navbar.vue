@@ -9,7 +9,7 @@
                     <q-btn class="q-ml-lg" size="18px" no-caps color="primary" flat outline  label="Invoices"></q-btn>
                 </router-link>
             </div>
-            <q-btn size="18px" v-if="loggedIn" flat outline color="primary" no-caps @click="logOut()" label="Log out"></q-btn>
+            <q-btn icon="exit_to_app" size="18px" v-if="loggedIn" flat outline color="primary" no-caps @click="logOut()" label="Log out"></q-btn>
         </div>
     </div>
 </template>
