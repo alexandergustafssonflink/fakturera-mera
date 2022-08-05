@@ -1,0 +1,247 @@
+<template>
+<div class="container">
+    <q-btn @click="generateInvoicePdf()">PDF!!</q-btn>
+    <div class="invoice-wrapper">
+        <div ref="invoiceTemplate" class="invoice-template">
+            <div class="header">
+                <div class="logo">
+                    <h1 class="q-ma-none">LOGO</h1>
+                </div>
+                <div class="header-right">
+                    <h5 class="q-ma-none text-weight-bold">Faktura</h5>
+                    <div class="flex">
+                        <div class="invoice-date q-mr-md">
+                            <p class="text-weight-bold">Datum</p>
+                            <p>{{invoice.invoiceDate.split("/").join("-")}}</p>   
+                        </div>
+                        <div class="invoice-no">
+                            <p class="text-weight-bold">Fakturanummer</p>
+                            <p>{{invoice._id}}</p>   
+                        </div>
+                    </div>
+                    <div class="adress q-mt-xl">
+                        <p>{{invoice.customerName}}</p>
+                        <p>{{invoice.customerAdress}}</p>
+                        <p>{{invoice.zip}} {{invoice.city}}</p>
+                    </div>
+                </div>                
+
+            </div>
+            <div class="greeting-section q-mt-xl">
+                <p>Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries, but also the leap into electronic typesetting, remaining essentially unchanged. It was popularised in the 1960s with the release of Letraset sheets containing Lorem Ipsum passages, and more recently with desktop publishing software like Aldus PageMaker including versions of Lorem Ipsum.</p>
+            </div>
+
+            <div class="specification-section q-mt-xl">
+                <table>
+                    <tr class="table-header">
+                        <th>Beskrivning</th>
+                        <th>Antal</th>
+                        <th>À pris</th>
+                        <th>Summa</th>
+                    </tr>
+                    <tr v-for="row, i in invoice.invoiceRows" :key="i">
+                        <td>{{row.description}}</td>
+                        <td>HEJ</td>
+                        <td>HEJ</td>
+                        <td>{{row.amount}}</td>
+                    </tr>
+                </table>
+                <table class="q-mt-sm">
+                    <tr class="table-header gray">
+                        <th>Summa exkl moms</th>
+                        <th>Moms (25%)</th>
+                        <th>Valuta</th>
+                        <th>Summa</th>
+                    </tr>
+                    <tr>
+                        <td>531</td>
+                        <td>130</td>
+                        <td>SEK</td>
+                        <td>674</td>
+                    </tr>
+                </table>
+                <div class="payment-wrapper q-mt-xl">
+                    <div class="payment-info">
+                        <h5 class="q-mb-none">Summa att betala: <span class="text-weight-bold">674kr</span> </h5>
+                        <h5>Bankgiro: 5858-1616</h5>
+                        <h5>Betalningsreferens: {{invoice._id}}</h5>
+                        <h5>Betalas senast: {{invoice.invoiceDueDate.split("/").join("-")}}</h5>
+                    </div>
+                </div>
+                <p class="q-mt-xl">Vid utebliven betalning debiteras en påminnelseavgift om 60kr, samt dröjsmålränta från förfallodatumet om {{invoice.interest}}%.</p>
+            </div>
+            <div class="invoice-footer flex justify-between">
+                <div>
+                    <p class="text-weight-bold">Postadress </p>
+                    <p>Adressfält</p>
+                    <p>Adressfält 2</p>
+                    <p class="flex"><span>Postnummer</span> <span>Stad</span></p>
+                </div>
+                <div>
+                    <p class="text-weight-bold">Kontaktinformation </p>
+                    <p>Mail: </p>
+                    <p>Telefon: </p>
+                </div>
+                <div>
+                    <p class="text-weight-bold">Orgnr/F-skatt </p>
+                    <p>556523-5512</p>
+                    <p class="text-weight-bold">Momsregistreringsnummer </p>
+                    <p>SE5565235512</p>
+                </div>
+                <div>
+                    <p class="text-weight-bold">Betalningsmottagare </p>
+                    <p>Företaget AB</p>
+                    <p>Bankgiro: </p>
+                    <p>Plusgiro: </p>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+</template>
+
+<script>
+import axios from "axios";
+import { jsPDF } from "jspdf";
+import html2canvas from "html2canvas";
+
+export default {
+    name: 'SingleInvoice',
+    components: {
+    },
+    methods: {
+        async getInvoice() {
+            const data = await axios.get('http://localhost:3000/api/invoices/' + this.$route.path.split("/invoices/")[1], {
+            headers: {
+            "auth-token": localStorage.token
+        }})
+
+        this.invoice = data.data[0];
+        },
+        async generateInvoicePdf() {
+            let canvas = await html2canvas(this.$refs.invoiceTemplate);
+            var img = canvas.toDataURL("image/png");
+            const doc = new jsPDF();
+            doc.addImage(img,'JPEG',10,10);
+            doc.save('test.pdf');
+        }
+    },
+    data() {
+        return {
+            invoice: {
+                customerNumber: "",
+                id: "", 
+                customerName: "",
+                customerAdress: "",
+                zip: "",
+                city: "",
+                invoiceRows: [
+                    {
+                        description: "",
+                        amount: ""
+                    }
+                ],
+                invoiceDate: "",
+                invoiceDueDate: "",
+                interest: ""
+            },
+        }
+    },
+
+    async created() {
+        this.getInvoice();
+    }
+}
+</script>
+
+<style>
+
+p {
+    margin: 0;
+    text-align: left;
+}
+
+.invoice-template {
+    width: 21cm;
+    height: 29.7cm;
+    background-color: white;
+    position: relative;
+}
+
+.invoice-wrapper {
+    display: flex;
+    justify-content: center;
+    background-color: white;
+    padding-top: 3em;
+    padding-bottom: 3em;
+}
+
+.header {
+    display: flex;
+    justify-content: space-between;
+    /* align-items: center; */
+}
+
+.adress p {
+    font-size: 18px;
+}
+
+.logo {
+    align-self: baseline;
+}
+
+.header h5 {
+    text-align: left;
+}
+
+.specification-section table {
+    width: 100%;
+}
+
+.specification-section table th {
+    text-align: left;
+    padding: 0.25em;
+}
+
+.specification-section table td {
+    text-align: left;
+}
+
+.table-header {
+    background-color: black;
+    color: white;
+    padding: 1em;
+}
+
+.table-header.gray {
+    background-color: gray;
+    color: white;
+    padding: 1em;
+}
+
+.invoice-footer {
+    position: absolute;
+    bottom: 0;
+    width: 100%;
+    border-top: solid 2px black;
+    padding-top: 1em;
+}
+
+.payment-wrapper {
+    display: flex;
+    justify-content: center;
+}
+
+.payment-info h5 {
+    margin: 0;
+    text-align: left;
+}
+.payment-info {
+    padding: 2em; 
+    border: solid 2px black;
+    border-radius: 4px;
+    width: fit-content;
+}
+
+
+</style>

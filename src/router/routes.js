@@ -1,5 +1,6 @@
 // import { RouteRecordRaw } from "vue-router";
 import Invoices from "@/views/invoices.vue";
+import SingleInvoice from "@/views/single-invoice.vue"
 import Login from "@/views/login.vue";
 import Home from "@/views/home.vue";
 
@@ -14,6 +15,12 @@ const routes = [
         path: "/invoices",
         name: "invoices",
         component: Invoices,
+        meta: { requiresAuth: true },
+    },
+    {
+        path: "/invoices/:id",
+        name: "single-invoice",
+        component: SingleInvoice,
         meta: { requiresAuth: true },
     },
     {
