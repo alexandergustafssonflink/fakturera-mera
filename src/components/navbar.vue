@@ -5,8 +5,11 @@
                 <router-link to="/">
                     <q-btn size="18px" color="primary" outline flat no-caps label="Home"></q-btn>
                 </router-link>
-                <router-link to="/invoices"  v-if="loggedIn">
+                <router-link to="/invoices" v-if="loggedIn">
                     <q-btn class="q-ml-lg" size="18px" no-caps color="primary" flat outline  label="Invoices"></q-btn>
+                </router-link>
+                <router-link to="/settings" v-if="loggedIn">
+                    <q-btn class="q-ml-lg" size="18px" no-caps color="primary" flat outline  label="Inställningar"></q-btn>
                 </router-link>
             </div>
             <q-btn icon="exit_to_app" size="18px" v-if="loggedIn" flat outline color="primary" no-caps @click="logOut()" label="Log out"></q-btn>

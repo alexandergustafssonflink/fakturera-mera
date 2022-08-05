@@ -1,7 +1,7 @@
 <template>
 <div class="box">
   <div class="wrapper">
-    <h3>Login!</h3>
+    <h3>Logga in!</h3>
     <q-input label="Name" v-model="user.email"></q-input>
     <q-input type="password" label="Password" v-model="user.password"></q-input>
     <q-btn  class="q-mt-lg" no-caps color="primary" @click="login()">Login</q-btn>

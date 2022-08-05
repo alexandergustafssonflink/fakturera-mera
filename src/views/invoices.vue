@@ -1,50 +1,51 @@
 <template>
 <div class="container">
     <div class="header">
-        <h3>Invoices</h3>
-        <q-btn icon="post_add"  no-caps color="primary" outline @click="createInvoiceOpened = true">Create invoice</q-btn>
+        <h3>Fakturor</h3>
+        <q-btn icon="post_add"  no-caps color="primary" outline @click="createInvoiceOpened = true">Skapa faktura</q-btn>
     </div>
+    <q-skeleton v-if="isLoading" height="400px"></q-skeleton>
     <!-- <q-table :pagination="pagination" title="Invoices" :rows="invoices" :columns="columns" row-key="name"/> -->
-    <q-table  :rows="invoices" :columns="columns" :pagination = pagination>
-    <template v-slot:header="props">
-        <q-tr :props="props">
-            <q-th v-for="col in props.cols" :key="col.name" :props="props">
-                {{col.label}}
-            </q-th>
-        </q-tr>
-    </template>
-    <template #body="props">
-        <q-tr :props="props" @click="goToInvoice(props.row._id)">
-            <q-td key="customerNumber" no-hover :props="props" class="text-weight-bold">
-                {{ props.row.customerNumber }}
-            </q-td>
-            <q-td key="id" no-hover :props="props" class="description-cell">
-                {{ props.row.id }}
-            </q-td>
-            <q-td key="customerName" no-hover :props="props">
-                {{ props.row.customerName }}
-            </q-td>
-            <q-td key="customerAdress" no-hover :props="props">
-                {{ props.row.customerAdress }}
-            </q-td>
-            <q-td key="zip" no-hover :props="props">
-                {{ props.row.zip }}
-            </q-td>
-            <q-td key="city" no-hover :props="props">
-                {{ props.row.city }}
-            </q-td>
-            <q-td key="invoiceDate" no-hover :props="props">
-                {{ props.row.invoiceDate }}
-            </q-td>
-            <q-td key="invoiceDueDate" no-hover :props="props">
-                {{ props.row.invoiceDueDate }}
-            </q-td>
-            <q-td key="interest" no-hover :props="props">
-                {{ props.row.interest }}
-            </q-td>
-        </q-tr>
-    </template>
-</q-table>
+    <q-table v-else :rows="invoices" :columns="columns" :pagination = pagination>
+        <template v-slot:header="props">
+            <q-tr :props="props">
+                <q-th v-for="col in props.cols" :key="col.name" :props="props">
+                    {{col.label}}
+                </q-th>
+            </q-tr>
+        </template>
+        <template #body="props">
+            <q-tr :props="props" @click="goToInvoice(props.row._id)">
+                <q-td key="customerNumber" no-hover :props="props" class="text-weight-bold">
+                    {{ props.row.customerNumber }}
+                </q-td>
+                <q-td key="id" no-hover :props="props" class="description-cell">
+                    {{ props.row.id }}
+                </q-td>
+                <q-td key="customerName" no-hover :props="props">
+                    {{ props.row.customerName }}
+                </q-td>
+                <q-td key="customerAdress" no-hover :props="props">
+                    {{ props.row.customerAdress }}
+                </q-td>
+                <q-td key="zip" no-hover :props="props">
+                    {{ props.row.zip }}
+                </q-td>
+                <q-td key="city" no-hover :props="props">
+                    {{ props.row.city }}
+                </q-td>
+                <q-td key="invoiceDate" no-hover :props="props">
+                    {{ props.row.invoiceDate }}
+                </q-td>
+                <q-td key="invoiceDueDate" no-hover :props="props">
+                    {{ props.row.invoiceDueDate }}
+                </q-td>
+                <q-td key="interest" no-hover :props="props">
+                    {{ props.row.interest }}
+                </q-td>
+            </q-tr>
+        </template>
+    </q-table>
 </div>
 <q-dialog v-model="createInvoiceOpened">
     <q-card class="q-pa-md invoice-modal">
@@ -94,6 +95,7 @@
 import axios from "axios";
 import { jsPDF } from "jspdf";
 import html2canvas from "html2canvas";
+import { useQuasar } from 'quasar';
 
 export default {
     name: 'Invoices',
@@ -108,19 +110,30 @@ export default {
                 }});
                 await this.getInvoices();
                 this.createInvoiceOpened = false;
+                this.quasar.notify({
+                    message: "Fakturan skapades",
+                    type: "positive",
+                    position: "center"
+                });
             } catch (error) {
                 console.log(error);
+                this.quasar.notify({
+                    message: "Något gick fel när fakturan skapades",
+                    type: "negative",
+                    position: "center"
+                });
             }
 
 
             },
         async getInvoices() {
+            this.isLoading = true;
             const data = await axios.get('http://localhost:3000/api/invoices', {
             headers: {
             "auth-token": localStorage.token
         }})
-
-        this.invoices = data.data
+            this.invoices = data.data;
+            this.isLoading = false;
         },
         async generateInvoicePdf() {
             let canvas = await html2canvas(this.$refs.invoiceTemplate);
@@ -135,6 +148,8 @@ export default {
     },
     data() {
         return {
+            quasar: useQuasar(),
+            isLoading: Boolean,
             invoices: [],
             invoice: {
                 customerNumber: "",
@@ -188,7 +203,7 @@ export default {
 }
 </script>
 
-<style>
+<style scoped>
 
 h3 {
     text-align: left;

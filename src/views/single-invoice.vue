@@ -1,7 +1,8 @@
 <template>
 <div class="container">
     <q-btn @click="generateInvoicePdf()">PDF!!</q-btn>
-    <div class="invoice-wrapper">
+    <q-spinner v-if="isLoading"></q-spinner>
+    <div class="invoice-wrapper" v-else>
         <div ref="invoiceTemplate" class="invoice-template">
             <div class="header">
                 <div class="logo">
@@ -68,31 +69,31 @@
                         <h5>Betalas senast: {{invoice.invoiceDueDate.split("/").join("-")}}</h5>
                     </div>
                 </div>
-                <p class="q-mt-xl">Vid utebliven betalning debiteras en påminnelseavgift om 60kr, samt dröjsmålränta från förfallodatumet om {{invoice.interest}}%.</p>
+                <p class="duedate-info">Vid utebliven betalning debiteras en påminnelseavgift om 60kr, samt dröjsmålränta från förfallodatumet om {{invoice.interest}}%.</p>
             </div>
             <div class="invoice-footer flex justify-between">
                 <div>
                     <p class="text-weight-bold">Postadress </p>
-                    <p>Adressfält</p>
-                    <p>Adressfält 2</p>
-                    <p class="flex"><span>Postnummer</span> <span>Stad</span></p>
+                    <p>{{invoice.userInfo.companyName}}</p>
+                    <p>{{invoice.userInfo.adress}}</p>
+                    <p class="flex"><span>{{invoice.userInfo.zip}}</span> <span>{{invoice.userInfo.city}}</span></p>
                 </div>
                 <div>
                     <p class="text-weight-bold">Kontaktinformation </p>
-                    <p>Mail: </p>
-                    <p>Telefon: </p>
+                    <p>{{invoice.userInfo.email}}</p>
+                    <p>{{invoice.userInfo.phone}}</p>
                 </div>
                 <div>
                     <p class="text-weight-bold">Orgnr/F-skatt </p>
-                    <p>556523-5512</p>
+                    <p>{{invoice.userInfo.id}}</p>
                     <p class="text-weight-bold">Momsregistreringsnummer </p>
-                    <p>SE5565235512</p>
+                    <p>{{invoice.userInfo.momsNo}}</p>
                 </div>
                 <div>
                     <p class="text-weight-bold">Betalningsmottagare </p>
-                    <p>Företaget AB</p>
-                    <p>Bankgiro: </p>
-                    <p>Plusgiro: </p>
+                    <p>{{invoice.userInfo?.companyName}}</p>
+                    <p v-if="invoice.userInfo.paymentType == 'Bankgiro'">Bankgiro: {{invoice.userInfo.paymentNo}}  </p>
+                    <p v-else>Plusgiro: {{invoice.userInfo.paymentNo}}  </p>
                 </div>
             </div>
         </div>
@@ -128,6 +129,7 @@ export default {
     },
     data() {
         return {
+            isLoading: Boolean,
             invoice: {
                 customerNumber: "",
                 id: "", 
@@ -149,12 +151,14 @@ export default {
     },
 
     async created() {
-        this.getInvoice();
+        this.isLoading = true;
+        await this.getInvoice();
+        this.isLoading = false;
     }
 }
 </script>
 
-<style>
+<style scoped>
 
 p {
     margin: 0;
@@ -243,5 +247,8 @@ p {
     width: fit-content;
 }
 
+.duedate-info {
+    margin-top: 48px; 
+}
 
 </style>
