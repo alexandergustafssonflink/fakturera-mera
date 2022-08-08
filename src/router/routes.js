@@ -3,6 +3,7 @@ import Invoices from "@/views/invoices.vue";
 import SingleInvoice from "@/views/single-invoice.vue"
 import Settings from "@/views/settings.vue";
 import Login from "@/views/login.vue";
+import Register from "@/views/register.vue";
 import Home from "@/views/home.vue";
 
 const routes = [
@@ -34,6 +35,11 @@ const routes = [
         path: "/login",
         name: "login",
         component: Login,
+    },
+    {
+        path: "/register",
+        name: "register",
+        component: Register,
     },
 ];
 
