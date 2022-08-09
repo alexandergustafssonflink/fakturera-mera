@@ -17,7 +17,7 @@
                         </div>
                         <div class="invoice-no">
                             <p class="text-weight-bold">Fakturanummer</p>
-                            <p>{{invoice._id}}</p>   
+                            <p>{{invoice.invoiceNo}}</p>   
                         </div>
                     </div>
                     <div class="adress q-mt-xl">
@@ -65,7 +65,7 @@
                     <div class="payment-info">
                         <h5 class="q-mb-none">Summa att betala: <span class="text-weight-bold">{{invoice.totalSum}}</span> </h5>
                         <h5>{{invoice.userInfo.paymentType}}: {{invoice.userInfo.paymentNo}}</h5>
-                        <h5>Betalningsreferens: {{invoice._id}}</h5>
+                        <h5>Betalningsreferens: {{invoice.invoiceNo}}</h5>
                         <h5>Betalas senast: {{invoice.invoiceDueDate.split("/").join("-")}}</h5>
                     </div>
                 </div>
@@ -134,7 +134,8 @@ export default {
             isLoading: Boolean,
             invoice: {
                 customerNumber: "",
-                id: "", 
+                id: "",
+                invoiceNo: null,
                 customerName: "",
                 customerAdress: "",
                 zip: "",
