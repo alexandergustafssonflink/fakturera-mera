@@ -1,12 +1,12 @@
 <template>
 <div class="container">
-    <q-btn @click="generateInvoicePdf()">PDF!!</q-btn>
     <q-spinner v-if="isLoading"></q-spinner>
     <div class="invoice-wrapper" v-else>
         <div ref="invoiceTemplate" class="invoice-template">
             <div class="header">
                 <div class="logo">
                     <h1 class="q-ma-none">LOGO</h1>
+                    <p class="text-weight-bold customer-no">Kundnummer: {{invoice.customerNumber}}</p>
                 </div>
                 <div class="header-right">
                     <h5 class="q-ma-none text-weight-bold">Faktura</h5>
@@ -29,7 +29,7 @@
 
             </div>
             <div class="greeting-section q-mt-xl">
-                <p>Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries, but also the leap into electronic typesetting, remaining essentially unchanged. It was popularised in the 1960s with the release of Letraset sheets containing Lorem Ipsum passages, and more recently with desktop publishing software like Aldus PageMaker including versions of Lorem Ipsum.</p>
+                <p>{{invoice.userInfo.invoiceText}}</p>
             </div>
 
             <div class="specification-section q-mt-xl">
@@ -42,29 +42,29 @@
                     </tr>
                     <tr v-for="row, i in invoice.invoiceRows" :key="i">
                         <td>{{row.description}}</td>
-                        <td>HEJ</td>
-                        <td>HEJ</td>
+                        <td>{{row.quantity}}</td>
                         <td>{{row.amount}}</td>
+                        <td>{{row.quantity * row.amount}}</td>
                     </tr>
                 </table>
                 <table class="q-mt-sm">
                     <tr class="table-header gray">
                         <th>Summa exkl moms</th>
-                        <th>Moms (25%)</th>
+                        <th>Moms ({{invoice.momsRate.label}})</th>
                         <th>Valuta</th>
                         <th>Summa</th>
                     </tr>
                     <tr>
-                        <td>531</td>
-                        <td>130</td>
+                        <td>{{invoice.invoiceSum}}</td>
+                        <td>{{invoice.momsSum}}</td>
                         <td>SEK</td>
-                        <td>674</td>
+                        <td>{{invoice.totalSum}}</td>
                     </tr>
                 </table>
                 <div class="payment-wrapper q-mt-xl">
                     <div class="payment-info">
-                        <h5 class="q-mb-none">Summa att betala: <span class="text-weight-bold">674kr</span> </h5>
-                        <h5>Bankgiro: 5858-1616</h5>
+                        <h5 class="q-mb-none">Summa att betala: <span class="text-weight-bold">{{invoice.totalSum}}</span> </h5>
+                        <h5>{{invoice.userInfo.paymentType}}: {{invoice.userInfo.paymentNo}}</h5>
                         <h5>Betalningsreferens: {{invoice._id}}</h5>
                         <h5>Betalas senast: {{invoice.invoiceDueDate.split("/").join("-")}}</h5>
                     </div>
@@ -92,12 +92,14 @@
                 <div>
                     <p class="text-weight-bold">Betalningsmottagare </p>
                     <p>{{invoice.userInfo?.companyName}}</p>
-                    <p v-if="invoice.userInfo.paymentType == 'Bankgiro'">Bankgiro: {{invoice.userInfo.paymentNo}}  </p>
-                    <p v-else>Plusgiro: {{invoice.userInfo.paymentNo}}  </p>
+                    <p>{{invoice.userInfo.paymentType}}: {{invoice.userInfo.paymentNo}}</p>
+                    <!-- <p v-if="invoice.userInfo.paymentType == 'Bankgiro'">Bankgiro: {{invoice.userInfo.paymentNo}}  </p>
+                    <p v-else>Plusgiro: {{invoice.userInfo.paymentNo}}  </p> -->
                 </div>
             </div>
         </div>
     </div>
+    <q-btn no-caps color="primary" class="q-mt-lg" icon="download" @click="generateInvoicePdf()">Ladda ner pdf</q-btn>
 </div>
 </template>
 
@@ -192,6 +194,11 @@ p {
 
 .logo {
     align-self: baseline;
+}
+
+.customer-no {
+    margin-top: 20px;
+    font-size: 20px
 }
 
 .header h5 {

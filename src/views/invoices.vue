@@ -66,11 +66,29 @@
             <h6 class="q-mb-none q-mt-none">Fakturainformation</h6>
             <q-btn @click="invoice.invoiceRows.push( { description: '', amount: '' });" color="primary" outline no-caps label="Lägg till rad" icon="add"></q-btn>
         </div>
-        <div v-for="invoiceRow, i in invoice.invoiceRows" :key="i" class="invoice-row">
-            <q-input dense label="Beskrivning" v-model="invoiceRow.description"></q-input>
-            <q-input dense class="q-ml-md" label="Belopp" v-model="invoiceRow.amount"></q-input>
-            <q-btn v-if="i > 0" @click="invoice.invoiceRows.splice(i, 1)" class="q-ml-md" flat color="red" outline no-cap icon="remove"></q-btn>
+        <div class="invoice-info">
+            <div>
+                <div v-for="invoiceRow, i in invoice.invoiceRows" :key="i" class="invoice-row">
+                    <q-input dense label="Beskrivning" v-model="invoiceRow.description"></q-input>
+                    <q-input @blur="calculateAmount()" dense class="q-ml-md" label="À pris exkl moms" v-model="invoiceRow.amount"></q-input>
+                    <q-input dense @blur="calculateAmount()" label="Antal" class="q-ml-md" v-model="invoiceRow.quantity"></q-input>
+                    <q-btn v-if="i > 0" @click="invoice.invoiceRows.splice(i, 1)" class="q-ml-md" flat color="red" outline no-cap icon="remove"></q-btn>
+                </div>
+                <div class="flex q-mt-lg">
+                    <!-- <q-select class="select-moms" dense label="Momssats" :options="[0.06, 0.12, 0.25]" v-model="invoice.momsRate" /> -->
+                    <q-select class="select-moms" dense label="Momssats" :options="[{'label': '6%', 'value': 0.06}, {'label': '12%', 'value': 0.12}, {'label': '25%', 'value': 0.25}]" v-model="invoice.momsRate" />
+                    <q-input class="q-ml-md"  dense label="Dröjsmålsränta (%)" v-model="invoice.interest"></q-input>
+                    <q-checkbox v-model="invoice.cost" label="Fakturaavgift 25kr"></q-checkbox>
+                </div>
+            </div>
+            <div class="q-mt-xl invoice-sum">
+                <h6 class="q-mb-sm q-mt-none">Summering</h6>
+                <p class="q-mb-none text-weight-bold">Belopp: {{invoice.invoiceSum}}</p>
+                <p class="q-mb-none text-weight-bold">Moms: {{invoice.momsSum}}</p>
+                <p class="q-mb-none text-weight-bold">Totalt (SEK): {{invoice.totalSum}}</p>
+            </div>
         </div>
+        
         <div class="invoice-dates flex q-mt-lg">
             <div>
                 <p class="q-mb-none">Fakturadatum</p>
@@ -81,9 +99,9 @@
                 <q-date dense label="Förfallodatum" :locale="seLocale" v-model="invoice.invoiceDueDate" />
             </div>
         </div>
-        <div class="interest-wrapper q-mt-lg">
-            <q-input label="Dröjsmålsränta (%)" v-model="invoice.interest"></q-input>
-        </div>
+        <!-- <div class="interest-wrapper q-mt-lg">
+            
+        </div> -->
         <div class="q-mt-xl">
             <q-btn color="primary" @click="createInvoiceOpened = false;" no-caps outline class="q-mr-sm">Avbryt</q-btn> <q-btn no-caps color="green" @click="createInvoice()">Skapa faktura </q-btn>
         </div>
@@ -99,6 +117,18 @@ import { useQuasar } from 'quasar';
 
 export default {
     name: 'Invoices',
+    watch: {
+        momsRate: {
+            handler() {
+                this.calculateAmount();
+            }
+        }
+    },
+    computed: {
+        momsRate() {
+        return this.invoice.momsRate
+        }
+    },
     components: {
     },
     methods: {
@@ -126,7 +156,18 @@ export default {
 
 
             },
-        async getInvoices() {
+            calculateAmount() {
+                let sum = 0;
+                this.invoice.invoiceRows.forEach(row => {
+                    if(row.amount && row.quantity) {
+                        sum = sum + Number(row.amount) * Number(row.quantity)
+                    }
+                })
+                this.invoice.invoiceSum = sum;
+                this.invoice.momsSum = Math.trunc(sum * this.invoice.momsRate.value);
+                this.invoice.totalSum = this.invoice.invoiceSum + this.invoice.momsSum;
+            },
+            async getInvoices() {
             this.isLoading = true;
             const data = await axios.get('http://localhost:3000/api/invoices', {
             headers: {
@@ -161,9 +202,15 @@ export default {
                 invoiceRows: [
                     {
                         description: "",
-                        amount: ""
+                        amount: "",
+                        quantity: ""
                     }
                 ],
+                momsRate: {'label': "25%", 'value': 0.25 },
+                invoiceSum: 0,
+                momsSum: 0,
+                totalSum: 0,
+                cost: false,
                 invoiceDate: "",
                 invoiceDueDate: "",
                 interest: ""
@@ -230,6 +277,10 @@ h3 {
     justify-content: space-between
 }
 
+.select-moms {
+    min-width: 175px;
+}
+
 .interest-wrapper {
     max-width: 400px;
 }
@@ -237,5 +288,18 @@ h3 {
 .invoice-row {
     display: flex;
     /* justify-content: space-between; */
+}
+
+.invoice-info {
+    display: flex;
+    justify-content: space-between;
+}
+
+.invoice-sum {
+    padding: 1em;
+    border-radius: 5px;
+    background-color: #3EA39F;
+    color: white;
+    min-width: 200px;
 }
 </style>

@@ -19,6 +19,7 @@
                 <q-select v-model="userInfo.paymentType" class="payment-type q-mr-sm" :options="['Bankgiro', 'Plusgiro']" label="BG / PG" />
                 <q-input v-model="userInfo.paymentNo" label="Nummer" />
             </div>
+            <q-input type="textarea" v-model="userInfo.invoiceText" label="Fakturatext" />
             <q-btn class="save-btn" color="primary" label="Spara" no-caps @click="saveUser()"></q-btn>
         </div>
         
@@ -72,7 +73,8 @@ export default {
                 phone: "",
                 momsNo: "",
                 paymentType: "",
-                paymentNo: ""
+                paymentNo: "",
+                invoiceText: ""
             }
         }
     },
