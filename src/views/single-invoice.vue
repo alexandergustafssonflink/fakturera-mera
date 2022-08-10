@@ -1,13 +1,18 @@
 <template>
 <div class="container">
     <q-spinner v-if="isLoading"></q-spinner>
-    <div class="invoice-wrapper" v-else>
+    <div class="invoice-wrapper q-mt-lg box" v-else>
         <div ref="invoiceTemplate" class="invoice-template">
             <div class="header">
-                <div class="logo">
-                    <h1 class="q-ma-none">LOGO</h1>
+                <div class="upper-left">
+                    <div class="logo-wrapper">
+                        <img ref="logo" class="logo" v-if="invoice.userInfo.logoUrl" :src="invoice.userInfo.logoUrl" alt="" crossorigin>
+                        <img v-else src="@/assets/logo.png" alt="">
+                    </div>
+                    <!-- <h6 v-else class="q-ma-none">{{invoice.userInfo.companyName}}</h6> -->
                     <p class="text-weight-bold customer-no">Kundnummer: {{invoice.customerNumber}}</p>
                 </div>
+                
                 <div class="header-right">
                     <h5 class="q-ma-none text-weight-bold">Faktura</h5>
                     <div class="flex">
@@ -63,7 +68,7 @@
                 </table>
                 <div class="payment-wrapper q-mt-xl">
                     <div class="payment-info">
-                        <h5 class="q-mb-none">Summa att betala: <span class="text-weight-bold">{{invoice.totalSum}}</span> </h5>
+                        <h5 class="q-mb-none">Summa att betala (SEK): <span class="text-weight-bold">{{invoice.totalSum}}</span> </h5>
                         <h5>{{invoice.userInfo.paymentType}}: {{invoice.userInfo.paymentNo}}</h5>
                         <h5>Betalningsreferens: {{invoice.invoiceNo}}</h5>
                         <h5>Betalas senast: {{invoice.invoiceDueDate.split("/").join("-")}}</h5>
@@ -122,11 +127,15 @@ export default {
         this.invoice = data.data[0];
         },
         async generateInvoicePdf() {
-            let canvas = await html2canvas(this.$refs.invoiceTemplate);
-            var img = canvas.toDataURL("image/png");
+            let canvas = await html2canvas(this.$refs.invoiceTemplate,
+                {
+                    useCORS	:true
+                });
+            let img = canvas.toDataURL("image/png");
             const doc = new jsPDF();
             doc.addImage(img,'JPEG',10,10);
-            doc.save('test.pdf');
+            doc.save("Faktura " + this.invoice.invoiceNo + ".pdf");
+            console.log(this.$refs.logo);
         }
     },
     data() {
@@ -257,6 +266,20 @@ p {
 
 .duedate-info {
     margin-top: 48px; 
+}
+
+.logo-wrapper {
+    width: 200px;
+    height: 100px;
+    
+}
+
+.logo {
+    float: left;
+    width: 50%;
+    height: auto;
+    max-height: 200px;
+    
 }
 
 </style>

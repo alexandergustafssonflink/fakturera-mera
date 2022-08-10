@@ -12,6 +12,7 @@
             <q-input v-model="userInfo.email" label="E-mail" />
             <q-input v-model="userInfo.phone" label="Telefon" />
         </div>
+
         <div class="q-ml-xl payment-information">
             <h5 class="q-mb-sm">Betalningsuppgifter</h5>
             <q-input v-model="userInfo.momsNo" label="Momsregistreringsnummer" />
@@ -19,10 +20,14 @@
                 <q-select v-model="userInfo.paymentType" class="payment-type q-mr-sm" :options="['Bankgiro', 'Plusgiro']" label="BG / PG" />
                 <q-input v-model="userInfo.paymentNo" label="Nummer" />
             </div>
-            <q-input type="textarea" v-model="userInfo.invoiceText" label="Fakturatext" />
+            <q-input type="textarea" v-model="userInfo.invoiceText" label="Fakturatext" />           
+            <h5 class="q-mt-lg q-mb-md">Logotyp</h5>
+            <div class="logo-wrapper">
+                <img class="logo" v-if="userInfo.logoUrl" :src="userInfo.logoUrl" alt="Logo">
+            </div>
+            <q-input color="primary" @update:model-value="val => { file = val[0]; uploadImage() }" filled type="file" hint="Native file" />
             <q-btn class="save-btn" color="primary" label="Spara" no-caps @click="saveUser()"></q-btn>
         </div>
-        
         
     </div>
     
@@ -58,10 +63,25 @@ export default {
             if(data) {
                 this.userInfo = data.data.userInfo;
             }
+        },
+        async uploadImage() {
+            let { data } = await axios.get('http://localhost:3000/api/user/s3url', {
+                headers: {
+                    "auth-token": localStorage.token
+                }});
+            
+                await axios.put(data.url, this.file, {
+                    headers: {
+                        "Content-Type": "multipart/form-data"
+                    },
+                });
+
+                this.userInfo.logoUrl = data.url.split("?")[0]
         }
     },
     data() {
         return {
+            file: "",
             quasar: useQuasar(),
             userInfo: {
                 id: "",
@@ -74,7 +94,8 @@ export default {
                 momsNo: "",
                 paymentType: "",
                 paymentNo: "",
-                invoiceText: ""
+                invoiceText: "",
+                logoUrl: ""
             }
         }
     },
@@ -102,9 +123,8 @@ export default {
     }
 
     .save-btn   {
-        position: absolute;
-        bottom: 0px;
-        right: 0px;
+        margin-top: 16px;
+        float: right;
     }
 
     .payment-type {
@@ -115,5 +135,13 @@ export default {
     }
     h5 {
         text-align: left;
+    }
+
+    .logo-wrapper {
+    }
+    .logo {
+        object-fit: contain;
+        width: 100%;
+        height: 190px;
     }
 </style>
