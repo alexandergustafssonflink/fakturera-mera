@@ -6,7 +6,8 @@
     <q-input type="password" label="Password" v-model="user.password"></q-input>
     <q-btn  class="q-mt-lg" no-caps color="primary" @click="login()">Login</q-btn>
     <h3>{{error}}</h3>
-    <q-btn  class="q-mt-lg" no-caps color="primary" @click="this.$router.push('/register')">Registrera dig</q-btn>
+    <p  class="q-mt-lg q-mb-sm">Ej medlem?</p>
+    <q-btn outline no-caps color="primary" @click="this.$router.push('/register')">Registrera dig</q-btn>
     <!-- <router-view /> -->
   </div>
 </div>
