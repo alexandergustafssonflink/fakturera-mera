@@ -15,36 +15,7 @@ export default {
     name: 'App',
     components: {
         NavBar
-    },
-    // methods: {
-    //     async login() {
-    //         try {
-    //             const token = await axios.post("http://localhost:3000/api/user/login", this.user);
-    //             if(token) {
-    //                 console.log("LOGGED IN!");
-    //                 this.$store.commit('login', token);
-    //                 console.log(this.$store.state.isLoggedIn());
-    //                 localStorage.setItem("token", token.data)
-    //                 console.log(localStorage);
-    //             }
-    //         } catch (error) {
-    //             this.error = error.response.data;
-    //         }
-  
-    //     },
-    // },
-    // data() {
-    //     return {
-    //         user: {
-    //             email: "johnnybonny@heja.se",
-    //             password: "connyhej"
-    //         },
-    //         error: ""
-    //     };
-    // },
-    // created() {
-    //    this.$store.state.isLoggedIn();
-    // }
+    }
 }
 </script>
 

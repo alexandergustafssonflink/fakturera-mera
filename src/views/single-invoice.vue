@@ -119,7 +119,7 @@ export default {
     },
     methods: {
         async getInvoice() {
-            const data = await axios.get('http://localhost:3000/api/invoices/' + this.$route.path.split("/invoices/")[1], {
+            const data = await axios.get(process.env.VUE_APP_API_URL + '/invoices/' + this.$route.path.split("/invoices/")[1], {
             headers: {
             "auth-token": localStorage.token
         }})

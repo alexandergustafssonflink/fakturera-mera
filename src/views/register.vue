@@ -24,7 +24,7 @@ export default {
         async registerAccount() {
             try {
                 this.isLoading = true;
-                await axios.post("http://localhost:3000/api/user/register", this.user);
+                await axios.post(process.env.VUE_APP_API_URL + "/user/register", this.user);
                 setTimeout(() => {
                 this.isLoading = false;
                 this.quasar.notify({

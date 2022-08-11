@@ -65,7 +65,7 @@ export default {
     methods: {
             async getInvoices() {
             this.isLoading = true;
-            const data = await axios.get('http://localhost:3000/api/invoices', {
+            const data = await axios.get(process.env.VUE_APP_API_URL + '/invoices', {
             headers: {
             "auth-token": localStorage.token
         }})

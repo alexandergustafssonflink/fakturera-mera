@@ -45,7 +45,7 @@ export default {
     },
     methods: {
         async saveUser() {
-            axios.put('http://localhost:3000/api/user', this.userInfo, {
+            axios.put(process.env.VUE_APP_API_URL + '/user', this.userInfo, {
             headers: {
                 "auth-token": localStorage.token
             }}); 
@@ -56,7 +56,7 @@ export default {
                 });    
         },
         async getUser() {
-            let data = await axios.get('http://localhost:3000/api/user', {
+            let data = await axios.get(process.env.VUE_APP_API_URL + '/user', {
                 headers: {
                     "auth-token": localStorage.token
                 }});
@@ -65,7 +65,7 @@ export default {
             }
         },
         async uploadImage() {
-            let { data } = await axios.get('http://localhost:3000/api/user/s3url', {
+            let { data } = await axios.get(process.env.VUE_APP_API_URL + '/user/s3url', {
                 headers: {
                     "auth-token": localStorage.token
                 }});

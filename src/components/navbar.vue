@@ -13,7 +13,7 @@
                     <q-btn class="q-ml-lg" size="18px" no-caps :class="$route.path.includes('settings') ? 'active' : ''" color="primary" flat outline  label="Inställningar"></q-btn>
                 </router-link>
             </div>
-            <q-btn icon="exit_to_app" size="18px" v-if="loggedIn" flat outline color="primary" no-caps @click="logOut()" label="Log out"></q-btn>
+            <q-btn icon="exit_to_app" size="18px" :loading="isLoading" v-if="loggedIn" flat outline color="primary" no-caps @click="logOut()" label="Log out"></q-btn>
         </div>
     </div>
 </template>
@@ -26,13 +26,19 @@ export default {
     },
     methods: {
         logOut() {
+            this.isLoading = true;
             localStorage.removeItem("token")
-            this.$router.push("/login")
+
+            setTimeout(() => {
+                this.isLoading = false;
+                this.$router.push("/login")
+            }, 1000);
         }
     },
     data() {
         return {
-            loggedIn: Boolean
+            loggedIn: Boolean,
+            isLoading: false
         }
     },
     created() {
