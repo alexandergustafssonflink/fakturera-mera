@@ -2,7 +2,12 @@
 <div class="container">
     <div class="header">
         <h3>Fakturor</h3>
-        <q-btn icon="post_add"  no-caps color="primary" outline @click="createInvoiceOpened = true">Skapa faktura</q-btn>
+        <q-btn icon="post_add"  no-caps color="primary" outline @click="createInvoiceOpened = true" :disabled="!userSettingsEmpty">Skapa faktura</q-btn>
+    </div>
+    <div v-if="!userSettingsEmpty" class="settings-empty-message">
+        <h6 class="q-mb-sm q-mt-none">Hej!</h6>
+        <p> Innan du skapar en faktura så behöver du lägga till lite inställningar...</p>
+        <q-btn no-caps @click="$router.push('/settings')">Ta mig dit!</q-btn>
     </div>
     <q-skeleton v-if="isLoading" height="400px"></q-skeleton>
     <!-- <q-table :pagination="pagination" title="Invoices" :rows="invoices" :columns="columns" row-key="name"/> -->
@@ -72,12 +77,23 @@ export default {
             this.invoices = data.data;
             this.isLoading = false;
         },
+        async getUser() {
+            let data = await axios.get(process.env.VUE_APP_API_URL + '/user', {
+                headers: {
+                    "auth-token": localStorage.token
+                }});
+            if(data) {
+                this.userInfo = data.data.userInfo;
+            }
+        },
         goToInvoice(id) {
             this.$router.push("/invoices/" + id)
         }
     },
     data() {
         return {
+            userInfo: {},
+            userSettingsEmpty: Boolean,
             quasar: useQuasar(),
             isLoading: Boolean,
             invoices: [],
@@ -101,7 +117,14 @@ export default {
     },
 
     async created() {
-        this.getInvoices();
+        await this.getInvoices();
+        await this.getUser();
+
+        if(Object.keys(this.userInfo).length === 0) {
+            this.userSettingsEmpty = true;
+        } else {
+            this.userSettingsEmpty = false;
+        }
     }
 }
 </script>
@@ -157,5 +180,13 @@ h3 {
     background-color: #3EA39F;
     color: white;
     min-width: 200px;
+}
+
+.settings-empty-message {
+    padding: 1em;
+    background: #3E5669;
+    color: white; 
+    border-radius: 5px;
+    margin-bottom: 1em;
 }
 </style>

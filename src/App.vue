@@ -15,6 +15,9 @@ export default {
     name: 'App',
     components: {
         NavBar
+    },
+    created() {
+        console.log("HEJ FRÅN APP");
     }
 }
 </script>
@@ -45,6 +48,11 @@ a {
   -moz-osx-font-smoothing: grayscale;
   text-align: center;
   color: #2c3e50;
+}
+
+h5 {
+    font-weight: 700 !important;
+    opacity:0.9;
 }
 
 .box {
