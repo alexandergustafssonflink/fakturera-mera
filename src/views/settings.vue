@@ -26,7 +26,7 @@
                 <img class="logo" v-if="userInfo.logoUrl" :src="userInfo.logoUrl" alt="Logo">
             </div>
             <q-input color="primary" @update:model-value="val => { file = val[0]; uploadImage() }" filled type="file" hint="Native file" />
-            <q-btn class="save-btn" color="primary" label="Spara" no-caps @click="saveUser()"></q-btn>
+            <q-btn class="save-btn" :disabled="!userInfo.id || !userInfo.companyName || !userInfo.adress || !userInfo.zip || !userInfo.momsNo || !userInfo.city || !userInfo.email || !userInfo.phone || !userInfo.paymentType || !userInfo.paymentNo" color="primary" label="Spara" no-caps @click="saveUser()"></q-btn>
         </div>
         
     </div>

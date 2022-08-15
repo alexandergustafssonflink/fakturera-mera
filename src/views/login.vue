@@ -1,12 +1,15 @@
 <template>
 <div class="box">
   <div class="wrapper">
-    <h3>Logga in!</h3>
+    <h5>Logga in</h5>
+    <div class="error" v-if="error">
+        <q-icon size="24px" name="warning"></q-icon>
+        <p v-if="error">{{error.data}} </p>
+    </div>
     <q-input label="Name" v-model="user.email"></q-input>
     <q-input type="password" label="Password" v-model="user.password"></q-input>
     <q-btn :loading="isLoading" class="q-mt-lg" no-caps color="primary" @click="login()">Login</q-btn>
-    <h3>{{error}}</h3>
-    <p  class="q-mt-lg q-mb-sm">Har du inget konto?</p>
+    <p class="q-mt-lg q-mb-sm">Har du inget konto?</p>
     <q-btn outline no-caps color="primary" @click="this.$router.push('/register')">Registrera dig</q-btn>
     <!-- <router-view /> -->
   </div>
@@ -37,6 +40,7 @@ export default {
                 }, 1000);
             } catch (error) {
                 this.error = error.response;
+                this.isLoading = false;
             }
             
         },
@@ -66,5 +70,20 @@ export default {
 .wrapper {
     min-width: 300px;
     max-width: 500px;
+}
+
+.error {
+    padding: 1em; 
+    background-color: #E36565;
+    color: white;
+    font-weight: 700;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-around;
+    align-items: center;
+}
+
+.error p {
+    margin: 6px 0 0 0;
 }
 </style>

@@ -21,8 +21,8 @@
             <div>
                 <div v-for="invoiceRow, i in invoice.invoiceRows" :key="i" class="invoice-row">
                     <q-input dense label="Beskrivning" v-model="invoiceRow.description"></q-input>
-                    <q-input @blur="calculateAmount()" dense class="q-ml-md" label="À pris exkl moms" v-model="invoiceRow.amount"></q-input>
-                    <q-input dense @blur="calculateAmount()" label="Antal" class="q-ml-md" v-model="invoiceRow.quantity"></q-input>
+                    <q-input @blur="calculateAmount()" dense class="q-ml-md" label="À pris exkl moms" v-model="invoiceRow.amount" :rules="[(val) => (val !== null && val !== '' && !/[a-zA-Z]/.test(val)) ||'Ange ett korrekt belopp',]"></q-input>
+                    <q-input dense @blur="calculateAmount()" label="Antal" class="q-ml-md" v-model="invoiceRow.quantity" :rules="[(val) => (val !== null && val !== '' && !/[a-zA-Z]/.test(val)) ||'Ange ett korrekt antal i siffror',]"></q-input>
                     <q-btn v-if="i > 0" @click="invoice.invoiceRows.splice(i, 1); calculateAmount()" class="q-ml-md" flat color="red" outline no-cap icon="remove"></q-btn>
                 </div>
                 <div class="flex q-mt-lg">
@@ -51,7 +51,7 @@
             </div>
         </div>
         <div class="q-mt-xl">
-            <q-btn color="primary" @click="$emit('closeModal')" no-caps outline class="q-mr-sm">Avbryt</q-btn> <q-btn no-caps color="green" @click="createInvoice()">Skapa faktura </q-btn>
+            <q-btn color="primary" @click="$emit('closeModal')" no-caps outline class="q-mr-sm">Avbryt</q-btn> <q-btn :disabled="!invoice.customerNumber || !invoice.id || !invoice.customerName || !invoice.customerAdress || !invoice.zip || !invoice.city || !invoice.invoiceRows[0].amount || !invoice.interest || !invoice.invoiceDate || !invoice.invoiceDueDate" no-caps color="green" @click="createInvoice()">Skapa faktura </q-btn>
         </div>
     </q-card>
 </template>
@@ -108,9 +108,25 @@ export default {
                         sum = sum + Number(row.amount) * Number(row.quantity)
                     }
                 })
-                this.invoice.invoiceSum = sum;
-                this.invoice.momsSum = Math.trunc(sum * this.invoice.momsRate.value);
-                this.invoice.totalSum = this.invoice.invoiceSum + this.invoice.momsSum;
+                // this.invoice.invoiceSum = sum;
+                
+                
+                if(!isNaN(sum)) {
+                    this.invoice.invoiceSum = sum;
+                } else {
+                    this.invoice.invoiceSum = "-"
+                }
+                if(!isNaN(Math.trunc(sum * this.invoice.momsRate.value))) {
+                    this.invoice.momsSum = Math.trunc(sum * this.invoice.momsRate.value);
+                } else {
+                    this.invoice.momsSum = "-"
+                }
+
+                if(!isNaN(this.invoice.invoiceSum + this.invoice.momsSum)) {
+                    this.invoice.totalSum = this.invoice.invoiceSum + this.invoice.momsSum;
+                } else {
+                    this.invoice.totalSum = "-"
+                }
             },
             async getCustomer() {
                 const { data } = await axios.get('http://localhost:3000/api/invoices/customer/' + this.invoice.customerNumber, {
@@ -217,6 +233,10 @@ h3 {
     background-color: #3EA39F;
     color: white;
     min-width: 200px;
+}
+
+.invoice-sum h6 {
+    font-weight: 700 !important;
 }
 
 .invoice-dates p {

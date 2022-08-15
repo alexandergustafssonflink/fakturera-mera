@@ -1,7 +1,11 @@
 <template>
 <div class="box">
   <div class="wrapper">
-    <h3>Registrera konto</h3>
+    <h5>Registrera konto</h5>
+    <div class="error" v-if="error">
+        <q-icon size="24px" name="warning"></q-icon>
+        <p v-if="error">{{error.data}} </p>
+    </div>
     <q-input label="Email" v-model="user.email"></q-input>
     <q-input type="password" label="Password" v-model="user.password"></q-input>
     <q-btn  class="q-mt-lg" :loading="isLoading" no-caps color="primary" @click="registerAccount()">Registrera dig!</q-btn>
@@ -67,5 +71,20 @@ export default {
 .wrapper {
     min-width: 300px;
     max-width: 500px;
+}
+
+.error {
+    padding: 1em; 
+    background-color: #E36565;
+    color: white;
+    font-weight: 700;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-around;
+    align-items: center;
+}
+
+.error p {
+    margin: 6px 0 0 0;
 }
 </style>
