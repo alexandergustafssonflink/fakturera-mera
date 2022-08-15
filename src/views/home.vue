@@ -14,6 +14,9 @@ export default {
     },
     methods: {
     },
+    created() {
+        this.$router.push("/invoices")
+    }
 }
 </script>
 

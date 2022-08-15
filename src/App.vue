@@ -1,13 +1,10 @@
 <template>
-  <div class="container">
+    <div class="app-wrapper">
     <nav-bar />
-    <!-- <h1>Login!</h1>
-    <q-input label="Name" v-model="user.email"></q-input>
-    <q-input label="password" v-model="user.password"></q-input>
-    <q-btn @click="login()">Login</q-btn>
-    <h3>{{error}}</h3> -->
-    <router-view />
-  </div>
+    <div class="page-wrapper">
+        <router-view />
+    </div>
+    </div>
 </template>
 
 <script>
@@ -18,50 +15,48 @@ export default {
     name: 'App',
     components: {
         NavBar
-    },
-    // methods: {
-    //     async login() {
-    //         try {
-    //             const token = await axios.post("http://localhost:3000/api/user/login", this.user);
-    //             if(token) {
-    //                 console.log("LOGGED IN!");
-    //                 this.$store.commit('login', token);
-    //                 console.log(this.$store.state.isLoggedIn());
-    //                 localStorage.setItem("token", token.data)
-    //                 console.log(localStorage);
-    //             }
-    //         } catch (error) {
-    //             this.error = error.response.data;
-    //         }
-  
-    //     },
-    // },
-    // data() {
-    //     return {
-    //         user: {
-    //             email: "johnnybonny@heja.se",
-    //             password: "connyhej"
-    //         },
-    //         error: ""
-    //     };
-    // },
-    // created() {
-    //    this.$store.state.isLoggedIn();
-    // }
+    }
 }
 </script>
 
 <style>
 
-.container {
-    max-width: 500px;
+html, body {
+    background-color: #fafafa;
+    
+}
+a {
+    text-decoration: none;
+    color: inherit;
+}
+
+.page-wrapper {
+    /* max-width: 1200px;
+    min-width: 900px; */
+    display: flex;
+    justify-content: center;
+    /* flex-direction: column; */
 }
 #app {
+    display: flex;
+    justify-content: center;
   font-family: Avenir, Helvetica, Arial, sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
   text-align: center;
   color: #2c3e50;
-  margin-top: 60px;
 }
+
+.box {
+    padding: 1.5em;
+    background-color: white;
+    box-shadow: rgba(0, 0, 0, 0.24) 0px 3px 8px;;
+    transition: 0.3s ease;
+    border-radius: 0.5em;
+}
+.container {
+    min-width: 900px;
+    max-width: 1400px;
+}
+
 </style>

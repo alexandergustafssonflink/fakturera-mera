@@ -1,74 +1,161 @@
 <template>
 <div class="container">
-    <h1>Invoices</h1>
-    <q-btn @click="createInvoiceOpened = true">Create invoice</q-btn>
-    <div v-for="invoice in invoices" :key="invoice._id">
-        <p>{{invoice.name}}</p>
-        <p>{{invoice.description}}</p>
-        <p>{{invoice.amount}}</p>
+    <div class="header">
+        <h3>Fakturor</h3>
+        <q-btn icon="post_add"  no-caps color="primary" outline @click="createInvoiceOpened = true">Skapa faktura</q-btn>
     </div>
+    <q-skeleton v-if="isLoading" height="400px"></q-skeleton>
+    <!-- <q-table :pagination="pagination" title="Invoices" :rows="invoices" :columns="columns" row-key="name"/> -->
+    <q-table v-else :rows="invoices" :columns="columns" :pagination = pagination>
+        <template v-slot:header="props">
+            <q-tr :props="props">
+                <q-th v-for="col in props.cols" :key="col.name" :props="props">
+                    {{col.label}}
+                </q-th>
+            </q-tr>
+        </template>
+        <template #body="props">
+            <q-tr :props="props" @click="goToInvoice(props.row._id)">
+                <q-td key="customerNumber" no-hover :props="props" class="text-weight-bold">
+                    {{ props.row.customerNumber }}
+                </q-td>
+                <q-td key="id" no-hover :props="props" class="description-cell">
+                    {{ props.row.id }}
+                </q-td>
+                <q-td key="customerName" no-hover :props="props">
+                    {{ props.row.customerName }}
+                </q-td>
+                <q-td key="customerAdress" no-hover :props="props">
+                    {{ props.row.customerAdress }}
+                </q-td>
+                <q-td key="zip" no-hover :props="props">
+                    {{ props.row.zip }}
+                </q-td>
+                <q-td key="city" no-hover :props="props">
+                    {{ props.row.city }}
+                </q-td>
+                <q-td key="invoiceDate" no-hover :props="props">
+                    {{ props.row.invoiceDate }}
+                </q-td>
+                <q-td key="invoiceDueDate" no-hover :props="props">
+                    {{ props.row.invoiceDueDate }}
+                </q-td>
+                <q-td key="interest" no-hover :props="props">
+                    {{ props.row.interest }}
+                </q-td>
+            </q-tr>
+        </template>
+    </q-table>
 </div>
 <q-dialog v-model="createInvoiceOpened">
-    <q-card class="q-pa-md">
-        <q-input label="Name" v-model="invoice.name"></q-input>
-        <q-input label="Description" v-model="invoice.description"></q-input>
-        <q-input label="Amount" v-model="invoice.amount"></q-input>
-        <q-btn color="primary" @click="createInvoiceOpened = false;" no-caps outline class="q-mr-sm">Cancel</q-btn> <q-btn no-caps color="red" @click="createInvoice()">Create invoice</q-btn>
-    </q-card>
+    <create-invoice @closeModal="createInvoiceOpened = false" @getInvoices="getInvoices()" />
 </q-dialog>
 </template>
 
 <script>
 import axios from "axios";
+import { useQuasar } from 'quasar';
+import CreateInvoice from "./create-invoice.vue";
 
 export default {
     name: 'Invoices',
     components: {
+        CreateInvoice
     },
     methods: {
-        async createInvoice(){
-            try {
-                await axios.post('http://localhost:3000/api/invoices', this.invoice, {
-                headers: {
-                "auth-token": localStorage.token
-                }})
-            } catch (error) {
-                console.log(error);
-            }
-
-
-            }
+            async getInvoices() {
+            this.isLoading = true;
+            const data = await axios.get(process.env.VUE_APP_API_URL + '/invoices', {
+            headers: {
+            "auth-token": localStorage.token
+        }})
+            this.invoices = data.data;
+            this.isLoading = false;
+        },
+        goToInvoice(id) {
+            this.$router.push("/invoices/" + id)
+        }
     },
     data() {
         return {
+            quasar: useQuasar(),
+            isLoading: Boolean,
             invoices: [],
-            invoice: {},
-            createInvoiceOpened: false
+            pagination: {
+                rowsPerPage: 50
+            },
+            createInvoiceOpened: false,
+            columns: [
+            { name: "customerNumber", label: "Kundnummer", align: "left", field: "customerNumber", sortable: true },
+            { name: "id", label: "id", align: "left", field: "id", sortable: true },
+            { name: "customerName", label: "Namn", field: "customerName", sortable: true },
+            { name: "customerAdress", label: "Adress", field: "customerAdress", sortable: true },
+            { name: "zip", label: "Postnr", field: "zip", sortable: true },
+            { name: "city", label: "Ort", field: "city", sortable: true },                          
+            { name: "invoiceDate",  label: "Fakturadatum", field: "invoiceDate", sortable: true },
+            { name: "invoiceDueDate", label: "Förfallodatum", field: "invoiceDueDate", sortable: true },
+            { name: "interest",  label: "Räntesats", field: "interest", sortable: true },
+
+        ],
         }
     },
 
     async created() {
-        const data = await axios.get('http://localhost:3000/api/invoices', {
-            headers: {
-            "auth-token": localStorage.token
-        }})
-
-        this.invoices = data.data
+        this.getInvoices();
     }
 }
 </script>
 
-<style>
+<style scoped>
 
-.container {
-    max-width: 500px;
+h3 {
+    text-align: left;
 }
-#app {
-  font-family: Avenir, Helvetica, Arial, sans-serif;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
-  text-align: center;
-  color: #2c3e50;
-  margin-top: 60px;
+
+.header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+
+.customer-info {
+    max-width: 400px;
+}
+
+.invoice-modal {
+    width: 900px;
+    max-width: unset !important;
+    padding: 3em;
+}
+
+.invoice-row-header {
+    display: flex;
+    justify-content: space-between
+}
+
+.select-moms {
+    min-width: 175px;
+}
+
+.interest-wrapper {
+    max-width: 400px;
+}
+
+.invoice-row {
+    display: flex;
+    /* justify-content: space-between; */
+}
+
+.invoice-info {
+    display: flex;
+    justify-content: space-between;
+}
+
+.invoice-sum {
+    padding: 1em;
+    border-radius: 5px;
+    background-color: #3EA39F;
+    color: white;
+    min-width: 200px;
 }
 </style>
