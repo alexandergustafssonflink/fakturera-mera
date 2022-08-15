@@ -23,13 +23,13 @@
                     <q-input dense label="Beskrivning" v-model="invoiceRow.description"></q-input>
                     <q-input @blur="calculateAmount()" dense class="q-ml-md" label="À pris exkl moms" v-model="invoiceRow.amount"></q-input>
                     <q-input dense @blur="calculateAmount()" label="Antal" class="q-ml-md" v-model="invoiceRow.quantity"></q-input>
-                    <q-btn v-if="i > 0" @click="invoice.invoiceRows.splice(i, 1)" class="q-ml-md" flat color="red" outline no-cap icon="remove"></q-btn>
+                    <q-btn v-if="i > 0" @click="invoice.invoiceRows.splice(i, 1); calculateAmount()" class="q-ml-md" flat color="red" outline no-cap icon="remove"></q-btn>
                 </div>
                 <div class="flex q-mt-lg">
                     <!-- <q-select class="select-moms" dense label="Momssats" :options="[0.06, 0.12, 0.25]" v-model="invoice.momsRate" /> -->
                     <q-select class="select-moms" dense label="Momssats" :options="[{'label': '6%', 'value': 0.06}, {'label': '12%', 'value': 0.12}, {'label': '25%', 'value': 0.25}]" v-model="invoice.momsRate" />
                     <q-input class="q-ml-md"  dense label="Dröjsmålsränta (%)" v-model="invoice.interest"></q-input>
-                    <q-checkbox v-model="invoice.cost" label="Fakturaavgift 25kr"></q-checkbox>
+                    <!-- <q-checkbox v-model="invoice.cost" label="Fakturaavgift 25kr"></q-checkbox> -->
                 </div>
             </div>
             <div class="q-mt-xl invoice-sum">
@@ -40,7 +40,7 @@
             </div>
         </div>
         
-        <div class="invoice-dates flex q-mt-lg">
+        <div class="invoice-dates flex">
             <div>
                 <p class="q-mb-none">Fakturadatum</p>
                 <q-date :locale="seLocale" label="Fakturadatum" v-model="invoice.invoiceDate" />
@@ -212,10 +212,15 @@ h3 {
 }
 
 .invoice-sum {
-    padding: 1em;
+    padding: 1em 1em 2em 1em;
     border-radius: 5px;
     background-color: #3EA39F;
     color: white;
     min-width: 200px;
+}
+
+.invoice-dates p {
+    font-weight: bold;
+    opacity: 0.7
 }
 </style>
