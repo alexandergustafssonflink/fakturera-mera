@@ -3,7 +3,7 @@ A web application that lets you create invoices in a reasonable way.
 
 Try it yourself <a href="https://fakturera-mera.vercel.app">here</a>
 
-<img src="https://giphy.com/clips/Dashpay-money-federal-reserve-printer-qXR53U25GPeocwivdd" width="100%">
+<div style=""><iframe allow="fullscreen" frameBorder="0" height="500px" src="https://giphy.com/embed/qXR53U25GPeocwivdd/video" width="100%"></iframe></div>
 
 ## License
 
