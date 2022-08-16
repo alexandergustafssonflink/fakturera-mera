@@ -2,9 +2,9 @@
 <div class="container">
     <div class="header">
         <h3>Fakturor</h3>
-        <q-btn icon="post_add"  no-caps color="primary" outline @click="createInvoiceOpened = true" :disabled="!userSettingsEmpty">Skapa faktura</q-btn>
+        <q-btn icon="post_add"  no-caps color="primary" outline @click="createInvoiceOpened = true" :disabled="userSettingsEmpty">Skapa faktura</q-btn>
     </div>
-    <div v-if="!userSettingsEmpty" class="settings-empty-message">
+    <div v-if="userSettingsEmpty" class="settings-empty-message">
         <h6 class="q-mb-sm q-mt-none">Hej!</h6>
         <p> Innan du skapar en faktura så behöver du lägga till lite inställningar...</p>
         <q-btn no-caps @click="$router.push('/settings')">Ta mig dit!</q-btn>
@@ -77,14 +77,19 @@ export default {
             this.invoices = data.data;
             this.isLoading = false;
         },
-        async getUser() {
+        async getUserSettings() {
             let data = await axios.get(process.env.VUE_APP_API_URL + '/user', {
                 headers: {
                     "auth-token": localStorage.token
                 }});
             if(data) {
                 this.userInfo = data.data.userInfo;
+            } 
+
+            if(this.userInfo == undefined) {
+                this.userSettingsEmpty = true;
             }
+
         },
         goToInvoice(id) {
             this.$router.push("/invoices/" + id)
@@ -93,7 +98,7 @@ export default {
     data() {
         return {
             userInfo: {},
-            userSettingsEmpty: Boolean,
+            userSettingsEmpty: false,
             quasar: useQuasar(),
             isLoading: Boolean,
             invoices: [],
@@ -118,13 +123,7 @@ export default {
 
     async created() {
         await this.getInvoices();
-        await this.getUser();
-
-        if(Object.keys(this.userInfo).length === 0) {
-            this.userSettingsEmpty = true;
-        } else {
-            this.userSettingsEmpty = false;
-        }
+        await this.getUserSettings();
     }
 }
 </script>
@@ -188,5 +187,23 @@ h3 {
     color: white; 
     border-radius: 5px;
     margin-bottom: 1em;
+}
+
+:deep(tbody tr:hover) {
+    background: #edefff;
+    transition: 0.3s ease;
+    cursor: pointer;
+}
+
+:deep(thead th) {
+    font-weight: 700;
+}
+
+:deep(table tr:nth-child(2n):hover) {
+    background: #edefff;
+}
+
+:deep(table tr:nth-child(2n)) {
+    background: whitesmoke
 }
 </style>

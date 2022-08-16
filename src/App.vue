@@ -65,6 +65,7 @@ h5 {
 .container {
     min-width: 900px;
     max-width: 1400px;
+    margin-bottom: 3em;
 }
 
 </style>

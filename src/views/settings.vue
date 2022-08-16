@@ -60,7 +60,7 @@ export default {
                 headers: {
                     "auth-token": localStorage.token
                 }});
-            if(data) {
+            if(data.data.userInfo) {
                 this.userInfo = data.data.userInfo;
             }
         },

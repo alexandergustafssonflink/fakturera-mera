@@ -9,7 +9,6 @@
     <q-input label="Email" v-model="user.email"></q-input>
     <q-input type="password" label="Password" v-model="user.password"></q-input>
     <q-btn  class="q-mt-lg" :loading="isLoading" no-caps color="primary" @click="registerAccount()">Registrera dig!</q-btn>
-    <h3>{{error}}</h3>
     <router-view />
   </div>
 </div>
@@ -41,6 +40,7 @@ export default {
                 
             } catch (error) {
                 this.error = error.response;
+                this.isLoading = false;
             }
   
         },
