@@ -1,24 +1,10 @@
-# frontend
+# Fakturera mera - frontend
+A web application that lets you create invoices in a reasonable way.
 
-## Project setup
-```
-npm install
-```
+Try it yourself <a href="https://fakturera-mera.vercel.app">here</a>
 
-### Compiles and hot-reloads for development
-```
-npm run serve
-```
+<img src="https://giphy.com/clips/Dashpay-money-federal-reserve-printer-qXR53U25GPeocwivdd" width="100%">
 
-### Compiles and minifies for production
-```
-npm run build
-```
+## License
 
-### Lints and fixes files
-```
-npm run lint
-```
-
-### Customize configuration
-See [Configuration Reference](https://cli.vuejs.org/config/).
+This project is licensed under the MIT License - see the LICENSE <a href="https://github.com/mikaelaalu/game-over/blob/master/LICENSE"> file </a> for details
