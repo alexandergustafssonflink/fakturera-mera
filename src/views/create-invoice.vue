@@ -14,8 +14,8 @@
             </div>
         </div>
         <div class="invoice-row-header q-mt-lg">
-            <h6 class="q-mb-none q-mt-none">Fakturainformation</h6>
-            <q-btn @click="invoice.invoiceRows.push( { description: '', amount: '' });" color="primary" outline no-caps label="Lägg till rad" icon="add"></q-btn>
+            <h6 class="q-mb-none q-mt-none">Fakturainformation (Max: 5 rader)</h6>
+            <q-btn :disable="invoice.invoiceRows.length > 4" @click="invoice.invoiceRows.push( { description: '', amount: '' });" color="primary" outline no-caps label="Lägg till rad" icon="add"></q-btn>
         </div>
         <div class="invoice-info">
             <div>
@@ -23,7 +23,7 @@
                     <q-input dense label="Beskrivning" v-model="invoiceRow.description"></q-input>
                     <q-input @blur="calculateAmount()" dense class="q-ml-md" label="À pris exkl moms" v-model="invoiceRow.amount" :rules="[(val) => (val !== null && val !== '' && !/[a-zA-Z]/.test(val)) ||'Ange ett korrekt belopp',]"></q-input>
                     <q-input dense @blur="calculateAmount()" label="Antal" class="q-ml-md" v-model="invoiceRow.quantity" :rules="[(val) => (val !== null && val !== '' && !/[a-zA-Z]/.test(val)) ||'Ange ett korrekt antal i siffror',]"></q-input>
-                    <q-btn v-if="i > 0" @click="invoice.invoiceRows.splice(i, 1); calculateAmount()" class="q-ml-md" flat color="red" outline no-cap icon="remove"></q-btn>
+                    <q-btn v-if="i > 0" @click="invoice.invoiceRows.splice(i, 1); calculateAmount()" class="q-ml-md" dense flat color="red" outline no-cap icon="remove"></q-btn>
                 </div>
                 <div class="flex q-mt-lg">
                     <!-- <q-select class="select-moms" dense label="Momssats" :options="[0.06, 0.12, 0.25]" v-model="invoice.momsRate" /> -->
@@ -32,7 +32,7 @@
                     <!-- <q-checkbox v-model="invoice.cost" label="Fakturaavgift 25kr"></q-checkbox> -->
                 </div>
             </div>
-            <div class="q-mt-xl invoice-sum">
+            <div class="q-mt-md invoice-sum">
                 <h6 class="q-mb-sm q-mt-none">Summering</h6>
                 <p class="q-mb-none text-weight-bold">Belopp: {{invoice.invoiceSum}}</p>
                 <p class="q-mb-none text-weight-bold">Moms: {{invoice.momsSum}}</p>
@@ -40,7 +40,7 @@
             </div>
         </div>
         
-        <div class="invoice-dates flex">
+        <div class="invoice-dates flex q-mt-lg">
             <div>
                 <p class="q-mb-none">Fakturadatum</p>
                 <q-date :locale="seLocale" label="Fakturadatum" v-model="invoice.invoiceDate" />
