@@ -55,17 +55,23 @@
 <q-dialog v-model="createInvoiceOpened">
     <create-invoice @closeModal="createInvoiceOpened = false" @getInvoices="getInvoices()" />
 </q-dialog>
+<div v-if="showCookieBanner">
+    <cookie-banner  @approveCookies="approveCookies()" />
+</div>
+
 </template>
 
 <script>
 import axios from "axios";
 import { useQuasar } from 'quasar';
 import CreateInvoice from "./create-invoice.vue";
+import CookieBanner from "@/components/cookie-banner.vue";
 
 export default {
     name: 'Invoices',
     components: {
-        CreateInvoice
+        CreateInvoice,
+        CookieBanner
     },
     methods: {
             async getInvoices() {
@@ -93,12 +99,27 @@ export default {
         },
         goToInvoice(id) {
             this.$router.push("/invoices/" + id)
+        },
+        approveCookies() {
+            if(!this.userInfo) {
+                this.userInfo = {
+                    approveCookies: true
+                }
+            } else {
+                this.userInfo.approveCookies = true
+            }
+            this.showCookieBanner = false;
+            axios.put(process.env.VUE_APP_API_URL + '/user', this.userInfo, {
+                headers: {
+                    "auth-token": localStorage.token
+                }}); 
         }
     },
     data() {
         return {
-            userInfo: {},
+            userInfo: null,
             userSettingsEmpty: false,
+            showCookieBanner: false,
             quasar: useQuasar(),
             isLoading: Boolean,
             invoices: [],
@@ -124,6 +145,12 @@ export default {
     async created() {
         await this.getInvoices();
         await this.getUserSettings();
+
+        if(!this.userInfo) {
+            this.showCookieBanner = true;
+        } else if (!this.userInfo.approveCookies) {
+            this.showCookieBanner = true;
+        }
     }
 }
 </script>

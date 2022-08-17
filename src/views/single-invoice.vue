@@ -7,9 +7,8 @@
                 <div class="upper-left">
                     <div class="logo-wrapper">
                         <img ref="logo" class="logo" v-if="invoice.userInfo.logoUrl" :src="invoice.userInfo.logoUrl" alt="" crossorigin>
-                        <img v-else src="@/assets/logo.png" alt="">
+                        <h6 v-else>{{invoice.userInfo.companyName}}</h6>
                     </div>
-                    <!-- <h6 v-else class="q-ma-none">{{invoice.userInfo.companyName}}</h6> -->
                     <p class="text-weight-bold customer-no">Kundnummer: {{invoice.customerNumber}}</p>
                 </div>
                 
