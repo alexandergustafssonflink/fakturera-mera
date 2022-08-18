@@ -2,6 +2,7 @@
 <div class="box">
   <div class="wrapper">
     <h5>Registrera konto</h5>
+    <div class="info" v-if="showVerifyMessage">Titta i din inkorg och verifiera din mailadress</div>
     <div class="error" v-if="error">
         <q-icon size="24px" name="warning"></q-icon>
         <p v-if="error">{{error.data}} </p>
@@ -28,16 +29,8 @@ export default {
             try {
                 this.isLoading = true;
                 await axios.post(process.env.VUE_APP_API_URL + "/user/register", this.user);
-                setTimeout(() => {
+                this.showVerifyMessage = true;
                 this.isLoading = false;
-                this.quasar.notify({
-                    message: "Konto är uppskapat och du kan nu logga in",
-                    type: "positive",
-                    position: "center"
-                });
-                this.$router.push("/login")
-                }, 3000);
-                
             } catch (error) {
                 this.error = error.response;
                 this.isLoading = false;
@@ -48,6 +41,7 @@ export default {
     data() {
         return {
             isLoading: Boolean,
+            showVerifyMessage: false,
             quasar: useQuasar(),
             user: {
                 // email: "johnnybonny@heja.se",
@@ -73,9 +67,20 @@ export default {
     max-width: 500px;
 }
 
+
+.info {
+    padding: 1em; 
+    background-color: #3E5669;
+    color: white;
+    font-weight: 700;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-around;
+    align-items: center;
+}
 .error {
     padding: 1em; 
-    background-color: #E36565;
+    background-color:#E36565; 
     color: white;
     font-weight: 700;
     display: flex;
