@@ -1,5 +1,5 @@
 <template>
-    <div class="navbar" v-if="this.$route.name !== 'login' && this.$route.name !== 'register'">
+    <div class="navbar" v-if="this.$route.name !== 'login' && this.$route.name !== 'register' && this.$route.name !== 'verify-email'">
         <div class="inner-navbar">
             <div>
                 <!-- <router-link to="/">

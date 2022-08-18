@@ -4,6 +4,7 @@ import SingleInvoice from "@/views/single-invoice.vue"
 import Settings from "@/views/settings.vue";
 import Login from "@/views/login.vue";
 import Register from "@/views/register.vue";
+import VerifyEmail from "@/views/verify-email.vue"
 import Home from "@/views/home.vue";
 
 const routes = [
@@ -40,6 +41,11 @@ const routes = [
         path: "/register",
         name: "register",
         component: Register,
+    },
+    {
+        path: "/verify-email/:id",
+        name: "verify-email",
+        component: VerifyEmail,
     },
 ];
 
