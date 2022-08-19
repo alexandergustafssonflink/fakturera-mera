@@ -1,8 +1,8 @@
 <template>
 <div class="box">
     <div v-if="respons">
-        <q-btn no-caps color="primary" @click="$router.push('/login')">Logga in</q-btn>
         <h6>{{respons.data}}</h6>
+        <q-btn no-caps color="primary" @click="$router.push('/login')">Logga in</q-btn>
     </div>
     <div v-else>
         <h6>{{error.response.data.error}}</h6>
@@ -38,14 +38,6 @@ export default {
 </script>
 
 <style scoped>
-
-.box {
-    /* display: flex;
-    align-items: center;
-    justify-content: center;
-    width: fit-content;
-    margin-top: 50px; */
-}
 .wrapper {
     min-width: 300px;
     max-width: 500px;
