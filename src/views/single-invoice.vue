@@ -103,7 +103,7 @@
             </div>
         </div>
     </div>
-    <q-btn no-caps color="primary" class="q-mt-lg" icon="download" @click="generateInvoicePdf()">Ladda ner pdf</q-btn>
+    <q-btn no-caps color="primary" class="q-mt-lg" icon="download" @click="generateInvoicePdf()">Skapa pdf</q-btn>
 </div>
 </template>
 
