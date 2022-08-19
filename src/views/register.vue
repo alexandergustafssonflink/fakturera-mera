@@ -3,7 +3,7 @@
   <div class="wrapper">
     <h5>Registrera konto</h5>
     <div class="info" v-if="showVerifyMessage">Titta i din inkorg och verifiera din mailadress</div>
-    <div class="error" v-if="error">
+    <div class="error" v-else-if="error">
         <q-icon size="24px" name="warning"></q-icon>
         <p v-if="error">{{error.data}} </p>
     </div>
