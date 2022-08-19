@@ -110,7 +110,7 @@
 <script>
 import axios from "axios";
 import { jsPDF } from "jspdf";
-import html2canvas from "html2canvas";
+// import html2canvas from "html2canvas";
 
 export default {
     name: 'SingleInvoice',
@@ -126,17 +126,34 @@ export default {
         this.invoice = data.data[0];
         },
         async generateInvoicePdf() {
-            let canvas = await html2canvas(this.$refs.invoiceTemplate,
-                {
-                    useCORS	:true
-                });
-            let img = canvas.toDataURL("image/png");
-            const doc = new jsPDF();
-            doc.addImage(img,'JPEG',10,10);
-            doc.save("Faktura " + this.invoice.invoiceNo + ".pdf");
-            console.log(this.$refs.logo);
+            let pdf = new jsPDF('p', 'pt', 'a4');
+            let pWidth = pdf.internal.pageSize.width;
+            let srcWidth = this.$refs.invoiceTemplate.scrollWidth;
+            let margin = 30; 
+            let scale = (pWidth - margin * 2) / srcWidth;
+            
+            pdf.html(this.$refs.invoiceTemplate, {
+                x: margin,
+                y: margin,
+                html2canvas: {
+                    scale: scale,
+                },
+                callback: function () {
+                    window.open(pdf.output('bloburl'));
+                }
+            });
         }
     },
+            // old version
+            // let canvas = await html2canvas(this.$refs.invoiceTemplate,
+            //     {
+            //         useCORS	:true
+            //     });
+            // let img = canvas.toDataURL("image/png");
+            // const doc = new jsPDF();
+            // doc.addImage(img,'JPEG',10,10);
+            // doc.save("Faktura " + this.invoice.invoiceNo + ".pdf");
+            // console.log(this.$refs.logo);
     data() {
         return {
             isLoading: Boolean,
