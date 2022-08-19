@@ -94,6 +94,8 @@ export default {
 
             if(this.userInfo == undefined) {
                 this.userSettingsEmpty = true;
+            } else if(!this.userInfo.companyName) {
+                this.userSettingsEmpty = true;
             }
 
         },

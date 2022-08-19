@@ -79,7 +79,7 @@ export default {
     methods: {
         async createInvoice(){
             try {
-                await axios.post('http://localhost:3000/api/invoices', this.invoice, {
+                await axios.post(process.env.VUE_APP_API_URL +'/invoices', this.invoice, {
                 headers: {
                     "auth-token": localStorage.token
                 }});
@@ -108,8 +108,6 @@ export default {
                         sum = sum + Number(row.amount) * Number(row.quantity)
                     }
                 })
-                // this.invoice.invoiceSum = sum;
-                
                 
                 if(!isNaN(sum)) {
                     this.invoice.invoiceSum = sum;
@@ -129,15 +127,17 @@ export default {
                 }
             },
             async getCustomer() {
-                const { data } = await axios.get('http://localhost:3000/api/invoices/customer/' + this.invoice.customerNumber, {
+                const { data } = await axios.get(process.env.VUE_APP_API_URL + '/invoices/customer/' + this.invoice.customerNumber, {
                 headers: {
                     "auth-token": localStorage.token
                 }});
-                this.invoice.customerName = data[0].customerName;
-                this.invoice.customerAdress = data[0].customerAdress;
-                this.invoice.zip = data[0].zip;
-                this.invoice.id = data[0].id;
-                this.invoice.city = data[0].city;
+                if(data.length > 0) {
+                    this.invoice.customerName = data[0].customerName;
+                    this.invoice.customerAdress = data[0].customerAdress;
+                    this.invoice.zip = data[0].zip;
+                    this.invoice.id = data[0].id;
+                    this.invoice.city = data[0].city;
+                }
             }
         },
     data() {
